@@ -15,14 +15,17 @@ struct NewsTableCellViewController: View {
     }
 
     var body: some View {
-        HStack(alignment: .center, spacing: 10) {
+        VStack(alignment: .center, spacing: 10) {
             Image(systemName: "applelogo").padding(10).frame(width: 50, height: 50)
             VStack(alignment: .leading, spacing: 10) {
-                Text(news.title ?? "Title").frame(minWidth: 0, maxWidth: .infinity, minHeight: 50, maxHeight: 100, alignment: .leading).lineLimit(2)
-                Text(news.description ?? "Content").frame(minWidth: 0, maxWidth: .infinity, alignment: .leading).lineLimit(2)
+                Text(news.title ?? "Title")
+                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 50, maxHeight: 100, alignment: .leading)
+                    .lineLimit(2)
+                Text(news.description ?? "Content")
+                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading).lineLimit(2)
             }.frame(maxWidth: .infinity)
             Image(systemName: "star.fill").padding(10)
-        }.frame(height: 150, alignment: .center)
+        }.frame(height: 250, alignment: .center)
     }
 }
 

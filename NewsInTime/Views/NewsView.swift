@@ -11,7 +11,7 @@ struct NewsView: View {
     var body: some View {
         NavigationView {
             VStack {
-                    NewsTableViewController(newsFeed: newsFeed)
+                NewsTableViewController(newsFeed: newsFeed)
             }.navigationTitle("NewsFeed")
         }
     }

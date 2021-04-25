@@ -9,9 +9,10 @@ import SwiftUI
 
 @main
 struct NewsInTimeApp: App {
+
     var body: some Scene {
         WindowGroup {
-            NewsView()
+            SignInView()
         }
     }
 }

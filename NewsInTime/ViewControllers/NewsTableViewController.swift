@@ -24,7 +24,6 @@ struct NewsTableViewController: View {
 }
 
 struct NewsTableViewController_Previews: PreviewProvider {
-    static let newsFeed = [NewsModel(id: 1, title: "News 1"), NewsModel(id: 2, title: "News 2")]
     static var previews: some View {
         NewsTableViewController(newsFeed: newsFeed)
     }
