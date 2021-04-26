@@ -8,30 +8,47 @@
 import SwiftUI
 
 struct SignInView: View {
+
+    @EnvironmentObject var userAuth: UserAuth
+
     @State var email = ""
     @State var password = ""
     @State var invalidEmail = false
     @State var invalidPassword = false
+    @State var isSignedIn: Bool?
 
     var body: some View {
         NavigationView {
             VStack {
                 Image("Logo")
+                    .resizable()
+                    .frame(width: 200, height: 200, alignment: .center)
                 Form {
                     TextField("E-Mail", text: $email)
-                    TextField("Password", text: $password)
+                        .autocapitalization(.none)
+                        .textContentType(.emailAddress)
+                        .keyboardType(.emailAddress)
+                    SecureField("Password", text: $password)
                     Button(action: {
                         if email == "" {
                             self.invalidEmail = true
                         }
                         if password == "" {
                             self.invalidPassword = true
+                        } else {
+                            Service.sharedInstance.authentication(
+                                email: email,
+                                password: password,
+                                for: .signIn) { isSignedIn in
+                                self.isSignedIn = isSignedIn
+                                self.userAuth.isLoggedin = isSignedIn
+                            }
                         }
                     }, label: {
                         Text("Sign In")
                     })
                     NavigationLink(
-                        destination: SignUpView(),
+                        destination: SignUpView().environmentObject(userAuth),
                         label: {
                             Text("SignUp")
                         })
@@ -41,9 +58,12 @@ struct SignInView: View {
                     if invalidPassword {
                         Text("Invalid password.").foregroundColor(.red)
                     }
+                    if let isSigned = self.isSignedIn, !isSigned {
+                        Text("Error in request").foregroundColor(.red)
+                    }
                 }
             }.navigationTitle("SignIn")
-        }
+        }.environmentObject(userAuth)
     }
 }
 

@@ -8,6 +8,7 @@ target 'NewsInTime' do
   # Pods for NewsInTime
   pod 'SwiftLint'
   pod 'Alamofire', '~> 5.2'
+  pod 'AlamofireImage', '~> 4.1'
   pod 'SwiftyJSON', '~> 4.0'
   
 end

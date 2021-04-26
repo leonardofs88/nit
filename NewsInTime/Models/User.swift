@@ -12,11 +12,13 @@ struct User: Codable {
     var name: String?
     var email: String?
     var password: String?
+    var isLogged: Bool?
 
     init() {
         self.id = nil
         self.name = nil
         self.email = nil
         self.password = nil
+        self.isLogged = nil
     }
 }

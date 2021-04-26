@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct NewsView: View {
+
+    @StateObject var userAuth = UserAuth()
+
     var body: some View {
-        NavigationView {
-            VStack {
-                NewsTableViewController(newsFeed: newsFeed)
-            }.navigationTitle("NewsFeed")
+        if !userAuth.isLoggedin {
+            SignInView().environmentObject(userAuth)
+        } else {
+            NewsFeed()
         }
     }
 }

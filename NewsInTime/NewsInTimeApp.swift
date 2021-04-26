@@ -12,7 +12,7 @@ struct NewsInTimeApp: App {
 
     var body: some Scene {
         WindowGroup {
-            SignInView()
+            NewsView()
         }
     }
 }
