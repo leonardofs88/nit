@@ -10,20 +10,24 @@ import Combine
 import Foundation
 import AlamofireImage
 
-class ImageLoader: ObservableObject {
+/// The service used for render images from given URL
+///
+///
+class AsyncImageViewModel: Service, ObservableObject {
 
     @Published var image: UIImage?
 
     private let url: URL
 
-    private let service = Service()
-
     init(url: URL) {
         self.url = url
     }
 
+    /// Loads the image from the given URL
+    ///
+    ///
     func load() {
-        service.manager.request(self.url).responseImage { (response) in
+        self.manager.request(self.url).responseImage { (response) in
             switch response.result {
             case .failure(let error):
                 print("Error while fetching image \(error.localizedDescription)")

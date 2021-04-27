@@ -7,7 +7,10 @@
 
 import SwiftUI
 
-struct NewsTableView: View {
+/// The app's news list feed view. It will show a list will all the fetched news from NewsFeedViewModel
+///
+///
+struct NewsFeedListView: View {
 
     @EnvironmentObject var userAuth: UserAuth
 
@@ -29,7 +32,7 @@ struct NewsTableView: View {
             }
 
             ForEach(filteredNews) { news in
-                NewsTableCell(news: news).environmentObject(userAuth)
+                NewsFeedListItem(news: news).environmentObject(userAuth)
             }
         }.onAppear {
             newsFeed.fetchNewsFeed()
@@ -39,6 +42,6 @@ struct NewsTableView: View {
 
 struct NewsTableView_Previews: PreviewProvider {
     static var previews: some View {
-        NewsTableView()
+        NewsFeedListView()
     }
 }

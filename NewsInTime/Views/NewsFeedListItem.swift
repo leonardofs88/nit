@@ -7,7 +7,10 @@
 
 import SwiftUI
 
-struct NewsTableCell: View {
+/// The app's news feed item view. It will render the news from the list of parent view NewFeedListView
+///
+///
+struct NewsFeedListItem: View {
 
     @EnvironmentObject var userAuth: UserAuth
 
@@ -27,7 +30,7 @@ struct NewsTableCell: View {
     var body: some View {
         VStack(alignment: .center, spacing: 10) {
             GeometryReader { geometry in
-                AsyncImage(url: URL(string: news.imageUrl!)!, width: geometry.size.width, height: 100.0) {
+                AsyncImageView(url: URL(string: news.imageUrl!)!, width: geometry.size.width, height: 100.0) {
                     Text("Loading image...")
                 }
             }
@@ -43,14 +46,16 @@ struct NewsTableCell: View {
                 Text("Published at: \(self.formattedDate)").font(.caption2)
                 Spacer()
                 Button(action: {
-                    actionSheet(news.url!)
                 },
                 label: {
                     Image(systemName: "square.and.arrow.up")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 20, height: 20)
                 })
+                .onTapGesture {
+                    actionSheet(news.url!)
+                }
+                .frame(width: 20, height: 20)
                 Spacer()
                 FavoriteButton(isSet: $isSet, newsId: news.id!)
                     .environmentObject(userAuth)
@@ -62,6 +67,7 @@ struct NewsTableCell: View {
             }
         }.frame(height: 250, alignment: .center)
     }
+
     private func actionSheet(_ urlString: String) {
         guard let data = URL(string: urlString) else { return }
         let sheet = UIActivityViewController(activityItems: [data], applicationActivities: nil)
@@ -71,6 +77,6 @@ struct NewsTableCell: View {
 
 struct NewsTableCellView_Previews: PreviewProvider {
     static var previews: some View {
-        NewsTableCell(news: newsFeed[0])
+        NewsFeedListItem(news: newsFeed[0])
     }
 }

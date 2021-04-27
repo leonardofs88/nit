@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/// The initial view of the app, it shows SignIn view by default and shows the NewsFeed when user is authenticated
+///
+///
 struct NewsView: View {
 
     @StateObject var userAuth = UserAuth()

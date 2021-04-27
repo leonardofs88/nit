@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/// The app's news carousel item view. It will render the news from the list of parent view NewsCaroulselListView
+///
+///
 struct NewsCarouselItem: View {
 
     var news: NewsModel
@@ -14,7 +17,7 @@ struct NewsCarouselItem: View {
 
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
-            AsyncImage(url: URL(string: news.imageUrl!)!, width: self.size.width, height: 150.0) {
+            AsyncImageView(url: URL(string: news.imageUrl!)!, width: self.size.width, height: 150.0) {
                 Text("Loading image...")
             }
 

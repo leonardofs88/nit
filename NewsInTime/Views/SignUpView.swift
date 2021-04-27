@@ -6,7 +6,9 @@
 //
 
 import SwiftUI
-
+/// A view for user initial authentication
+///
+///
 struct SignUpView: View {
 
     @EnvironmentObject var userAuth: UserAuth
@@ -20,7 +22,7 @@ struct SignUpView: View {
     @State var invalidEmail = false
     @State var invalidPassword = false
     @State var invalidName = false
-    @State var buttonIsTapped: Bool?
+    @State var isSignedUp: Bool?
 
     var body: some View {
         VStack {
@@ -45,7 +47,6 @@ struct SignUpView: View {
                     if name == "" {
                         self.invalidName = true
                     } else {
-                        self.buttonIsTapped = true
                         authenticator.authenticate(
                             name: name,
                             email: email,
@@ -54,8 +55,9 @@ struct SignUpView: View {
                     }
                 }, label: {
                     Text("Sign Up")
-                }).onReceive(authenticator.$isSigned) { isSigned in
+                }).onReceive(authenticator.$isSigned.dropFirst()) { isSigned in
                     self.userAuth.isLoggedin = isSigned
+                    self.isSignedUp = isSigned
                     if isSigned {
                         self.userAuth.email = email
                     }
@@ -70,7 +72,7 @@ struct SignUpView: View {
                 if invalidName {
                     Text("Invalid name.").foregroundColor(.red)
                 }
-                if let tapped = self.buttonIsTapped, tapped && !self.userAuth.isLoggedin {
+                if let isSigned = self.isSignedUp, !isSigned {
                     Text("Wrong e-mail or passaword.").foregroundColor(.red)
                 }
                 if confirmPassword != password {

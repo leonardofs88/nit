@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/// A view for creating user and authentication
+///
+///
 struct SignInView: View {
 
     @EnvironmentObject var userAuth: UserAuth
@@ -17,7 +20,7 @@ struct SignInView: View {
     @State var password = ""
     @State var invalidEmail = false
     @State var invalidPassword = false
-    @State var buttonIsTapped: Bool?
+    @State var isSignedIn: Bool?
 
     var body: some View {
         NavigationView {
@@ -38,17 +41,18 @@ struct SignInView: View {
                         if password == "" {
                             self.invalidPassword = true
                         } else {
-                            self.buttonIsTapped = true
                             authenticator.authenticate(email: email, password: password, for: .signIn)
                         }
                     }, label: {
                         Text("Sign In")
-                    }).onReceive(authenticator.$isSigned) { isSigned in
+                    }).onReceive(authenticator.$isSigned.dropFirst()) { isSigned in
                         self.userAuth.isLoggedin = isSigned
+                        self.isSignedIn = isSigned
                         if isSigned {
                             self.userAuth.email = email
                         }
                     }
+
                     NavigationLink(
                         destination: SignUpView()
                             .environmentObject(userAuth),
@@ -61,7 +65,7 @@ struct SignInView: View {
                     if invalidPassword {
                         Text("Invalid password.").foregroundColor(.red)
                     }
-                    if let tapped = self.buttonIsTapped, tapped && !self.userAuth.isLoggedin {
+                    if let isSigned = self.isSignedIn, !isSigned {
                         Text("Wrong e-mail or passaword.").foregroundColor(.red)
                     }
                 }

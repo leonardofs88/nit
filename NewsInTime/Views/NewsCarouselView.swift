@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/// The app's news caroulsel view. It will show the highlighted news fetched from NewsFeedViewModel
+///
+///
 struct NewsCarouselView: View {
 
     @StateObject var highlightedNews = NewsFeedViewModel()

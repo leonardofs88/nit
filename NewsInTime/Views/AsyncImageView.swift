@@ -9,8 +9,8 @@ import SwiftUI
 import Combine
 import Foundation
 
-struct AsyncImage<Placeholder: View>: View {
-    @StateObject private var loader: ImageLoader
+struct AsyncImageView<Placeholder: View>: View {
+    @StateObject private var loader: AsyncImageViewModel
     private let placeholder: Placeholder
 
     var width: CGFloat?
@@ -20,7 +20,7 @@ struct AsyncImage<Placeholder: View>: View {
         self.width = width
         self.height = height
         self.placeholder = placeholder()
-        _loader = StateObject(wrappedValue: ImageLoader(url: url))
+        _loader = StateObject(wrappedValue: AsyncImageViewModel(url: url))
     }
 
     var body: some View {

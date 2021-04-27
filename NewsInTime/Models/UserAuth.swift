@@ -8,19 +8,10 @@
 import Foundation
 import Combine
 
+/// Model for user authentication object used in the app
+///
+///
 class UserAuth: ObservableObject {
-
-    let didChange = PassthroughSubject<UserAuth, Never>()
-
-    let willChange = PassthroughSubject<UserAuth, Never>()
-
-    func login() {
-        self.isLoggedin = true
-    }
-
-    func setName(name: String) {
-        self.email = name
-    }
 
     @Published var isLoggedin = false {
         didSet {
@@ -33,4 +24,16 @@ class UserAuth: ObservableObject {
             didChange.send(self)
         }
     }
+
+    let didChange = PassthroughSubject<UserAuth, Never>()
+
+    let willChange = PassthroughSubject<UserAuth, Never>()
+
+    /// When called, publishes the isLoggedin variable to it's observers
+    ///
+    ///
+    func login() {
+        self.isLoggedin = true
+    }
+
 }

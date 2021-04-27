@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/// A favorite button component for the NewsFeedListItemView
+///
+///
 struct FavoriteButton: View {
 
     @EnvironmentObject var userAuth: UserAuth
@@ -18,13 +21,16 @@ struct FavoriteButton: View {
     var body: some View {
         Button(
             action: {
-                isSet.toggle()
-                UserDefaults.standard.setValue(isSet, forKey: "\(userAuth.email)_\(newsId)")
             },
             label: {
                 Image(systemName: isSet ? "star.fill" : "star")
                     .foregroundColor(isSet ? Color.yellow : Color.gray)
             })
+            .onTapGesture {
+                isSet.toggle()
+                UserDefaults.standard.setValue(isSet, forKey: "\(userAuth.email)_\(newsId)")
+            }
+            .frame(width: 25, height: 25, alignment: .center)
     }
 }
 

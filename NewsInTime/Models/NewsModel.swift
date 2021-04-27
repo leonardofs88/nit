@@ -8,6 +8,9 @@
 import Foundation
 import SwiftyJSON
 
+/// Codable model for the news that will be instantiated in the app
+///
+///
 struct NewsModel: Hashable, Codable, Identifiable {
     var id: Int?
     var title: String?
@@ -20,6 +23,9 @@ struct NewsModel: Hashable, Codable, Identifiable {
     var imageUrl: String?
 }
 
+/// Extension for JSON encoding to NewsModel
+///
+///
 extension NewsModel {
     init(with json: JSON) {
         self.id = json["id"].int ?? 0
@@ -43,11 +49,17 @@ extension NewsModel {
     }
 }
 
+/// Codable model for news to be shown in the Feed with pagination
+///
+///
 struct NewsFeedModel: Codable {
     var newsFeed: [NewsModel]
     var pagination: Pagination
 }
 
+/// Extension for JSON encoding to  NewsFeedModel
+///
+///
 extension NewsFeedModel {
     init(with json: JSON) {
         self.pagination = Pagination(with: json["pagination"])
@@ -59,6 +71,9 @@ extension NewsFeedModel {
     }
 }
 
+/// Codable model for pagination on NewsFeedModel
+///
+///
 struct Pagination: Codable {
     var currentPage: Int
     var perPage: Int
@@ -66,6 +81,9 @@ struct Pagination: Codable {
     var totalItems: Int
 }
 
+/// Extension for JSON encoding to Pagination
+///
+///
 extension Pagination {
     init(with json: JSON) {
         self.currentPage = json["current_page"].int ?? 0

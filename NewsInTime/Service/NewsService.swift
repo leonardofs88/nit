@@ -63,15 +63,27 @@ var newsFeed = [
               highlight: true) // for testing purposes
 ]
 
+/// Type  of authentiation
+///
+///
 enum AuthenticationMode {
     case signIn
     case signUp
 }
 
+/// Base URL used in all app requisitions
+///
+///
 let baseURL = "https://mesa-news-api.herokuapp.com"
 
+/// Token for user authentication
+///
+///
 private var token: String?
 
+/// Protocol used when a class need authentication delegation
+///
+///
 protocol ServiceAuthenticationDelegate: class {
     func authentication(name: String?,
                         email: String,
@@ -80,20 +92,35 @@ protocol ServiceAuthenticationDelegate: class {
                         completion: @escaping (Bool) -> Void)
 }
 
+/// Protocol used when a class need requisition services
+///
+///
 protocol ServiceDelegate: class {
     func get(for endpoint: String, completion: @escaping ([NewsModel]) -> Void)
 }
 
+/// The service used for HTTP communication layer for the app
+///
+///
 class Service: ServiceDelegate, ServiceAuthenticationDelegate {
 
+    /// Manager used for HTTPS requisitions
+    ///
+    ///
     let manager: Alamofire.Session = {
-
         let configuration = URLSessionConfiguration.default
 
         let manager = Alamofire.Session(configuration: configuration)
         return manager
     }()
 
+    /// Authentication method for HTTP communication 
+    ///
+    ///
+    /// - Parameter name: `String?` name of the user,  optional if it's for sign in mode
+    /// - Parameter email: `String` email of the user, obrigatory for all modes
+    /// - Parameter password: `String` password of the user, obrigatory for all modes
+    /// - Parameter for mode: `AuthenticationMode` the type of authentication
     func authentication(
         name: String? = nil,
         email: String,
@@ -137,6 +164,12 @@ class Service: ServiceDelegate, ServiceAuthenticationDelegate {
             })
     }
 
+    /// Fetch all news from Service
+    ///
+    ///
+    /// - Parameter currentPage: `String` the current page for pagination
+    /// - Parameter perPage: `String` page filter for pagination
+    /// - Parameter publishedAt: `String` published date filter for pagination
     func get(for endpoint: String, completion: @escaping ([NewsModel]) -> Void) {
 
         var newsFeedItems: [NewsModel] = []
@@ -175,8 +208,17 @@ class Service: ServiceDelegate, ServiceAuthenticationDelegate {
 }
 
 // MARK: - Encoding AlamoFire parameter to uft8
+
+/// Extension to force Alamofire's parameter encode to utf8
+///
+///
 extension String: ParameterEncoding {
 
+    /// Forces the body's parameter to UTF-8
+    ///
+    ///
+    /// - Parameter urlRequest: `URLRequestConvertible`  the request from Alamofire's session manager
+    /// - Parameter with parameters: `Parameters` the parameter's from request to be converted to UTF-8
     public func encode(_ urlRequest: URLRequestConvertible, with parameters: Parameters?) throws -> URLRequest {
         var request = try urlRequest.asURLRequest()
         request.httpBody = data(using: .utf8, allowLossyConversion: false)
