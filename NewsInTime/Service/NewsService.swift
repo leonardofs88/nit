@@ -72,17 +72,27 @@ let baseURL = "https://mesa-news-api.herokuapp.com"
 
 private var token: String?
 
-class Service {
+protocol ServiceAuthenticationDelegate: class {
+    func authentication(name: String?,
+                        email: String,
+                        password: String,
+                        for mode: AuthenticationMode,
+                        completion: @escaping (Bool) -> Void)
+}
 
-    static var manager: Alamofire.Session = {
+protocol ServiceDelegate: class {
+    func get(for endpoint: String, completion: @escaping ([NewsModel]) -> Void)
+}
+
+class Service: ServiceDelegate, ServiceAuthenticationDelegate {
+
+    let manager: Alamofire.Session = {
 
         let configuration = URLSessionConfiguration.default
 
         let manager = Alamofire.Session(configuration: configuration)
         return manager
     }()
-
-    static let sharedInstance = Service()
 
     func authentication(
         name: String? = nil,
@@ -103,7 +113,7 @@ class Service {
             parameter = "{\n\t\"name\": \"\(name!)\",\n\t\"email\": \"\(email)\",\n\t\"password\": \"\(password)\"\n}"
         }
 
-        Service.manager.request(
+        self.manager.request(
             "\(baseURL)/v1/client/auth/\(endpoint)",
             method: .post,
             parameters: [:],
@@ -135,7 +145,7 @@ class Service {
 
         dispatchQueue.async {
             dispatchGroup.enter()
-            Service.manager.request(
+            self.manager.request(
                 "\(baseURL)/v1/client/news\(endpoint)",
                 method: .get,
                 headers: [.contentType("application/json"), .authorization(bearerToken: token!)])
@@ -143,7 +153,7 @@ class Service {
                 .responseJSON(completionHandler: { response in
                     switch response.result {
                     case .failure(let error):
-                        print(error.errorDescription)
+                        print(error.errorDescription!)
                     case .success(let data):
                         var id = 0
                         var newsFeedWithId: [NewsModel] = []

@@ -16,12 +16,14 @@ class ImageLoader: ObservableObject {
 
     private let url: URL
 
+    private let service = Service()
+
     init(url: URL) {
         self.url = url
     }
 
     func load() {
-        Service.manager.request(self.url).responseImage { (response) in
+        service.manager.request(self.url).responseImage { (response) in
             switch response.result {
             case .failure(let error):
                 print("Error while fetching image \(error.localizedDescription)")

@@ -9,27 +9,20 @@ import Foundation
 import Alamofire
 import Combine
 
-class NewsFeedViewModel: ObservableObject {
+class NewsFeedViewModel: Service, ObservableObject {
 
     @Published var newsFeedItems: [NewsModel] = []
     @Published var highlightNews: [NewsModel] = []
 
-    init() {
-        self.fetchNewsFeed()
-        self.fetchHighlights()
-    }
-
-    private func fetchNewsFeed(currentPage: String = "", perPage: String = "", publishedAt: String = "") {
-        Service
-            .sharedInstance
-            .get(for: "?current_page=\(currentPage)&per_page=\(perPage)&published_at=\(publishedAt)") { newsItems in
+    func fetchNewsFeed(currentPage: String = "", perPage: String = "", publishedAt: String = "") {
+        self.get(for: "?current_page=\(currentPage)&per_page=\(perPage)&published_at=\(publishedAt)") { newsItems in
                 let sorted = newsItems.sorted { $0.publishedAt!.compare($1.publishedAt!) == .orderedDescending  }
                 self.newsFeedItems = sorted
             }
     }
 
-    private func fetchHighlights() {
-        Service.sharedInstance.get(for: "/highlights") { highlights in
+    func fetchHighlights() {
+        self.get(for: "/highlights") { highlights in
             self.highlightNews = highlights
         }
     }

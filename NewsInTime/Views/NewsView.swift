@@ -15,7 +15,7 @@ struct NewsView: View {
         if !userAuth.isLoggedin {
             SignInView().environmentObject(userAuth)
         } else {
-            NewsFeed()
+            NewsFeed().environmentObject(userAuth)
         }
     }
 }

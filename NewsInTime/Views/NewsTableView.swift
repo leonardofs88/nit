@@ -9,25 +9,30 @@ import SwiftUI
 
 struct NewsTableView: View {
 
-    @State private var showHighlightsOnly = false
+    @EnvironmentObject var userAuth: UserAuth
+
+    @State private var showFavoritesOnly = false
 
     @StateObject var newsFeed = NewsFeedViewModel()
 
-    var highlightedNews: [NewsModel] {
+    var filteredNews: [NewsModel] {
         newsFeed.newsFeedItems.filter { newsFeed in
-            (!showHighlightsOnly || newsFeed.highlight!)
+            let isFavorite = UserDefaults.standard.bool(forKey: "\(self.userAuth.email)_\(newsFeed.id!)")
+            return (!showFavoritesOnly || isFavorite)
         }
     }
 
     var body: some View {
         List {
-            Toggle(isOn: $showHighlightsOnly) {
+            Toggle(isOn: $showFavoritesOnly) {
                 Text("Favorites only")
             }
 
-            ForEach(highlightedNews) { news in
-                NewsTableCell(news: news)
+            ForEach(filteredNews) { news in
+                NewsTableCell(news: news).environmentObject(userAuth)
             }
+        }.onAppear {
+            newsFeed.fetchNewsFeed()
         }
     }
 }

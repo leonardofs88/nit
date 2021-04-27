@@ -11,11 +11,13 @@ struct SignInView: View {
 
     @EnvironmentObject var userAuth: UserAuth
 
+    @StateObject var authenticator = AuthenticationViewModel()
+
     @State var email = ""
     @State var password = ""
     @State var invalidEmail = false
     @State var invalidPassword = false
-    @State var isSignedIn: Bool?
+    @State var buttonIsTapped: Bool?
 
     var body: some View {
         NavigationView {
@@ -36,21 +38,22 @@ struct SignInView: View {
                         if password == "" {
                             self.invalidPassword = true
                         } else {
-                            Service.sharedInstance.authentication(
-                                email: email,
-                                password: password,
-                                for: .signIn) { isSignedIn in
-                                self.isSignedIn = isSignedIn
-                                self.userAuth.isLoggedin = isSignedIn
-                            }
+                            self.buttonIsTapped = true
+                            authenticator.authenticate(email: email, password: password, for: .signIn)
                         }
                     }, label: {
                         Text("Sign In")
-                    })
+                    }).onReceive(authenticator.$isSigned) { isSigned in
+                        self.userAuth.isLoggedin = isSigned
+                        if isSigned {
+                            self.userAuth.email = email
+                        }
+                    }
                     NavigationLink(
-                        destination: SignUpView().environmentObject(userAuth),
+                        destination: SignUpView()
+                            .environmentObject(userAuth),
                         label: {
-                            Text("SignUp")
+                            Text("Don't have an account? Sign Up!")
                         })
                     if invalidEmail {
                         Text("Invalid e-mail.").foregroundColor(.red)
@@ -58,8 +61,8 @@ struct SignInView: View {
                     if invalidPassword {
                         Text("Invalid password.").foregroundColor(.red)
                     }
-                    if let isSigned = self.isSignedIn, !isSigned {
-                        Text("Error in request").foregroundColor(.red)
+                    if let tapped = self.buttonIsTapped, tapped && !self.userAuth.isLoggedin {
+                        Text("Wrong e-mail or passaword.").foregroundColor(.red)
                     }
                 }
             }.navigationTitle("SignIn")

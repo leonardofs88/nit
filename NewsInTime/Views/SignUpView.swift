@@ -11,6 +11,8 @@ struct SignUpView: View {
 
     @EnvironmentObject var userAuth: UserAuth
 
+    @StateObject var authenticator = AuthenticationViewModel()
+
     @State var name = ""
     @State var email = ""
     @State var password = ""
@@ -18,7 +20,7 @@ struct SignUpView: View {
     @State var invalidEmail = false
     @State var invalidPassword = false
     @State var invalidName = false
-    @State var isSignedUp: Bool?
+    @State var buttonIsTapped: Bool?
 
     var body: some View {
         VStack {
@@ -43,18 +45,21 @@ struct SignUpView: View {
                     if name == "" {
                         self.invalidName = true
                     } else {
-                        Service.sharedInstance.authentication(
+                        self.buttonIsTapped = true
+                        authenticator.authenticate(
                             name: name,
                             email: email,
                             password: password,
-                            for: .signUp) { isSignedUp in
-                            self.isSignedUp = isSignedUp
-                            self.userAuth.isLoggedin = isSignedUp
-                        }
+                            for: .signUp)
                     }
                 }, label: {
                     Text("Sign Up")
-                })
+                }).onReceive(authenticator.$isSigned) { isSigned in
+                    self.userAuth.isLoggedin = isSigned
+                    if isSigned {
+                        self.userAuth.email = email
+                    }
+                }
 
                 if invalidEmail {
                     Text("Invalid e-mail.").foregroundColor(.red)
@@ -65,8 +70,8 @@ struct SignUpView: View {
                 if invalidName {
                     Text("Invalid name.").foregroundColor(.red)
                 }
-                if let isSigned = self.isSignedUp, !isSigned {
-                        Text("Error in request").foregroundColor(.red)
+                if let tapped = self.buttonIsTapped, tapped && !self.userAuth.isLoggedin {
+                    Text("Wrong e-mail or passaword.").foregroundColor(.red)
                 }
                 if confirmPassword != password {
                     Text("Passwords are not matching.").foregroundColor(.red)

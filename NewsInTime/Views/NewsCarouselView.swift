@@ -24,7 +24,7 @@ struct NewsCarouselView: View {
     var body: some View {
         GeometryReader { geometry in
             HStack(spacing: 0) {
-                ForEach(highlightedNews.newsFeedItems) { item in
+                ForEach(highlightedNews.highlightNews) { item in
                     NewsCarouselItem(news: item, size: geometry.size)
                         .frame(width: geometry.size.width, height: 150)
                 }
@@ -36,6 +36,9 @@ struct NewsCarouselView: View {
                 self.currentIndex = (self.currentIndex + 1) % numberOfNews
             }
         }.frame(height: 150)
+        .onAppear {
+            highlightedNews.fetchHighlights()
+        }
     }
 }
 

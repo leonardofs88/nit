@@ -9,6 +9,8 @@ import SwiftUI
 
 struct NewsTableCell: View {
 
+    @EnvironmentObject var userAuth: UserAuth
+
     @State var isSet = false
 
     let news: NewsModel
@@ -20,7 +22,6 @@ struct NewsTableCell: View {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
         self.formattedDate = formatter.string(from: news.publishedAt!)
-        self.isSet = news.highlight!
     }
 
     var body: some View {
@@ -38,17 +39,38 @@ struct NewsTableCell: View {
                 Text(news.description ?? "Content")
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading).lineLimit(2)
             }.frame(maxWidth: .infinity)
-            HStack {
-                Text(self.formattedDate)
-                FavoriteButton(isSet: $isSet)
+            HStack(alignment: .center, spacing: 10) {
+                Text("Published at: \(self.formattedDate)").font(.caption2)
+                Spacer()
+                Button(action: {
+                    actionSheet(news.url!)
+                },
+                label: {
+                    Image(systemName: "square.and.arrow.up")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 20, height: 20)
+                })
+                Spacer()
+                FavoriteButton(isSet: $isSet, newsId: news.id!)
+                    .environmentObject(userAuth)
+                    .onAppear {
+                        self.isSet = UserDefaults
+                            .standard
+                            .bool(forKey: "\(self.userAuth.email)_\(self.news.id!)")
+                    }
             }
         }.frame(height: 250, alignment: .center)
+    }
+    private func actionSheet(_ urlString: String) {
+        guard let data = URL(string: urlString) else { return }
+        let sheet = UIActivityViewController(activityItems: [data], applicationActivities: nil)
+        UIApplication.shared.windows.first?.rootViewController?.present(sheet, animated: true, completion: nil)
     }
 }
 
 struct NewsTableCellView_Previews: PreviewProvider {
-    static let news = NewsModel()
     static var previews: some View {
-        NewsTableCell(news: news)
+        NewsTableCell(news: newsFeed[0])
     }
 }

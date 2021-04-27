@@ -12,15 +12,23 @@ class UserAuth: ObservableObject {
 
     let didChange = PassthroughSubject<UserAuth, Never>()
 
-    // required to conform to protocol 'ObservableObject'
     let willChange = PassthroughSubject<UserAuth, Never>()
 
     func login() {
-        // login request... on success:
         self.isLoggedin = true
     }
 
+    func setName(name: String) {
+        self.email = name
+    }
+
     @Published var isLoggedin = false {
+        didSet {
+            didChange.send(self)
+        }
+    }
+
+    @Published var email = "" {
         didSet {
             didChange.send(self)
         }

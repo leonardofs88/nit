@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct NewsFeed: View {
+
+    @EnvironmentObject var userAuth: UserAuth
+
     var body: some View {
         NavigationView {
             VStack(alignment: .center, spacing: 25, content: {
                 NewsCarouselView(numberOfNews: 3)
-                NewsTableView()
+                NewsTableView().environmentObject(userAuth)
             }).navigationTitle("NewsFeed")
         }
     }
